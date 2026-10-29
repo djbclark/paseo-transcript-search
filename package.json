@@ -4,12 +4,12 @@
   "description": "Search text across active and archived Paseo session transcripts.",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "verify": "npm run typecheck && node --test test/*.test.mjs"
+    "verify": "npm run typecheck && node --test test/*.test.mjs && node --test --experimental-strip-types agent-tools.test.mjs && node --test native-tools.test.mjs"
   },
   "devDependencies": {
-    "@getpaseo/client": "0.11.0",
-    "@getpaseo/plugin": "0.11.0",
-    "@getpaseo/protocol": "0.11.0",
+    "@getpaseo/client": "0.14.0",
+    "@getpaseo/plugin": "0.14.0",
+    "@getpaseo/protocol": "0.14.0",
     "@tanstack/react-query": "^5.90.11",
     "@types/node": "^24.0.0",
     "@types/react": "~19.2.0",

@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/paseo-transcript-search?style=for-the-badge&color=cb3837)](https://www.npmjs.com/package/paseo-transcript-search)
 [![npm downloads](https://img.shields.io/npm/dm/paseo-transcript-search?style=for-the-badge&color=cb3837)](https://www.npmjs.com/package/paseo-transcript-search)
-[![Paseo](https://img.shields.io/badge/Paseo-%E2%89%A5%200.11.0-8A63D2?style=for-the-badge)](https://paseo.sh)
+[![Paseo](https://img.shields.io/badge/Paseo-%E2%89%A5%200.14.0-8A63D2?style=for-the-badge)](https://paseo.sh)
 [![License](https://img.shields.io/github/license/tomgrin10/paseo-transcript-search?style=for-the-badge&color=2563eb)](LICENSE)
 
 Find something said in a previous Paseo session, across all your connected hosts.
@@ -13,7 +13,7 @@ Example with synthetic sessions on a laptop and build server.
 
 ## Install
 
-Requires [Paseo](https://paseo.sh) **0.11.0 or newer** on the daemon and connected app. Enable plugins in **Settings → Plugins**, then run on each host you want to search:
+Requires [Paseo](https://paseo.sh) **0.14.0 or newer** on the daemon and connected app. Enable plugins in **Settings → Plugins**, then run on each host you want to search:
 
 ```sh
 paseo plugin install paseo-transcript-search
@@ -67,6 +67,16 @@ After changes, run `npm run verify` and `paseo plugin reload transcript-search`.
 ## Navigation and display
 
 Open this plugin from Command-K or its sidebar entry. **Overview** and **Display settings** link the main view and settings directly, without opening the Plugins settings page. Hiding a sidebar entry keeps Command-K available.
+
+## Paseo 0.14 agent integration
+
+`transcript_search_conversations` searches the calling workspace by default, with explicit project or host scope when needed. It searches more than 2,000 sessions in bounded batches, caps results and cancels ongoing scans with the tool call.
+
+Requires Paseo **0.14.0 or newer**. Agent tools are scoped to interactive Claude
+and Codex sessions; history-only opens receive none. They become available on
+the next idle session open after install or reload. The agent label
+`plugin-tools/enabled: "false"` opts a session out. Existing plugin data and
+settings are retained.
 
 ## Other plugins
 

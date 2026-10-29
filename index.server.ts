@@ -1,3 +1,4 @@
+import { contributeAgentTools } from "./server/native-tools";
 import { displayPreferences } from "./shared/display";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -11,6 +12,7 @@ import { hostIdentity, indexStatus, listHistory, restoreAgent, searchHistory } f
 import { restoreArchivedAgent } from "./server/restore-agent";
 
 export default function contribute(server: PluginServerContext) {
+  const removeTools = contributeAgentTools(server);
   server.registerSettings(displayPreferences);
   server.handle(hostIdentity, async () => ({
     serverId: process.env.PASEO_SERVER_ID?.trim() || (await readFile(join(paseoHome(), "server-id"), "utf8")).trim(),
@@ -28,6 +30,7 @@ export default function contribute(server: PluginServerContext) {
   server.handle(searchHistory, (input) => runSearch(input));
   server.handle(indexStatus, () => getIndexStatus());
   return async () => {
+    removeTools();
     abortAllSearches();
     await stopIndexer();
     clearCensusCaches();

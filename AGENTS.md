@@ -1,6 +1,6 @@
 # Transcript Search
 
-Paseo 0.11.0 or newer. This is a trusted plugin with independent client and server entries.
+Paseo 0.14.0 or newer. This is a trusted plugin with independent client and server entries.
 
 - Keep contribution wiring in `index.client.tsx` and `index.server.ts`.
 - `client/` contains React Native surfaces; `server/` contains filesystem and search code; `shared/` contains contracts and models safe in both bundles.

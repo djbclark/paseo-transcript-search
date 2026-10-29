@@ -90,7 +90,7 @@ function emptyResult(overrides: Partial<SearchOutput> = {}): SearchOutput {
   };
 }
 
-export async function runSearch(input: SearchInput): Promise<SearchOutput> {
+export async function runSearch(input: SearchInput, externalSignal?: AbortSignal): Promise<SearchOutput> {
   const key = input.clientKey ?? randomUUID();
   inflight.get(key)?.controller.abort();
   if (active >= MAX_ACTIVE) {
@@ -99,11 +99,15 @@ export async function runSearch(input: SearchInput): Promise<SearchOutput> {
     });
   }
   const controller = new AbortController();
+  const cancel = () => controller.abort();
+  if (externalSignal?.aborted) cancel();
+  else externalSignal?.addEventListener("abort", cancel, { once: true });
   inflight.set(key, { controller });
   active += 1;
   try {
     return await dispatch(input, controller.signal);
   } finally {
+    externalSignal?.removeEventListener("abort", cancel);
     active -= 1;
     if (inflight.get(key)?.controller === controller) inflight.delete(key);
   }
