@@ -1,6 +1,6 @@
 {
   "name": "paseo-transcript-search",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Search text across active and archived Paseo session transcripts.",
   "scripts": {
     "typecheck": "tsc --noEmit",
