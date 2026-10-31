@@ -40,6 +40,17 @@ function DisplaySettings({ theme }: PluginSurfaceProps) {
           onValueChange={(showSidebar) => void settings.save({ ...settings.values, showSidebar }, settings.revision)}
         />
       </SettingsCard>
+    </SettingsSection>
+    <SettingsSection title="Search results">
+      <SettingsCard>
+        <SettingsSwitch
+          label="Hide helper agents"
+          hint="Leave out short-lived agents that other plugins start for bookkeeping, such as Herald's summaries. They repeat the text they summarize and bury real matches."
+          value={settings.values.hideHelperAgents}
+          disabled={settings.saving}
+          onValueChange={(hideHelperAgents) => void settings.save({ ...settings.values, hideHelperAgents }, settings.revision)}
+        />
+      </SettingsCard>
       {settings.saveError && <Text accessibilityRole="alert" style={{ color: theme.colors.statusDanger }}>{settings.saveError}</Text>}
     </SettingsSection>
     </ScrollView>

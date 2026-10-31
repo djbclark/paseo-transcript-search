@@ -68,6 +68,8 @@ const AgentRecordSchema = z.object({
   lastStatus: z.string().nullable().optional(),
   archivedAt: z.string().nullable().optional(),
   internal: z.boolean().optional(),
+  // Agent labels, not the workspace labels above: a plugin marks the helpers it spawns here.
+  labels: z.record(z.string(), z.unknown()).optional(),
   config: z.object({ model: z.string().nullable().optional() }).optional(),
   runtimeInfo: z.object({ model: z.string().nullable().optional() }).optional(),
   persistence: z
@@ -191,7 +193,23 @@ async function listDirectory(path: string): Promise<Dirent[]> {
   }
 }
 
-/** Every stored agent record, archived ones included, internal ones excluded. */
+/**
+ * Agents other plugins spawn to do bookkeeping, identified by an agent label. The SDK cannot mark an
+ * agent internal, so these look like ordinary sessions and bury real results with copies of the
+ * text they were asked to summarize. Herald's summarizer is the known case.
+ */
+const HELPER_LABELS: ReadonlyArray<readonly [key: string, value: string]> = [["herald.role", "summarizer"]];
+let hideHelpers = true;
+
+export function setHideHelperAgents(hide: boolean): void {
+  hideHelpers = hide;
+}
+
+function isHiddenHelper(record: AgentRecord): boolean {
+  return hideHelpers && HELPER_LABELS.some(([key, value]) => record.labels?.[key] === value);
+}
+
+/** Every stored agent record, archived ones included, internal and (by default) helper agents excluded. */
 export async function loadAgentRecords(): Promise<AgentRecord[]> {
   const root = join(paseoHome(), "agents");
   const seen = new Set<string>();
@@ -215,7 +233,7 @@ export async function loadAgentRecords(): Promise<AgentRecord[]> {
         continue;
       }
       agentFiles.set(path, cached);
-      if (cached.value && !cached.value.internal) records.push(cached.value);
+      if (cached.value && !cached.value.internal && !isHiddenHelper(cached.value)) records.push(cached.value);
     }
   }
   for (const path of [...agentFiles.keys()]) {
