@@ -42,7 +42,7 @@ test("literal and regex searches find active, archived, Codex, and Claude subage
 
     const handlers = new Map();
     const server = await load("index.server.ts");
-    cleanup = server.default({ before() { return () => {}; }, registerSettings() {}, handle(contract, callback) { handlers.set(contract.name, { contract, callback }); } });
+    cleanup = server.default({ before() { return () => {}; }, registerSettings() { return { read: async () => ({ status: "loading" }), subscribe: () => () => {} }; }, handle(contract, callback) { handlers.set(contract.name, { contract, callback }); } });
     const invoke = async (name, input) => {
       const { contract, callback } = handlers.get(name);
       return contract.output.parse(await callback(contract.input.parse(input), {}));
